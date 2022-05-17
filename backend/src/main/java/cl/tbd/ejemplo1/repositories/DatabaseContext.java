@@ -7,17 +7,20 @@ import org.sql2o.Sql2o;
 
 @Configuration
 public class DatabaseContext {
+    // jdbc:postgresql://<HOST>:<PORT>/<DB_NAME>
+    // String user = <User Postgres>;
+    // String password = <Contraseña Postgres>;
     @Value("${database.url}")
-    private String dbUrl;
+    private String db;
 
     @Value("${database.user}")
-    private String dbUser;
+    private String user;
 
     @Value("${database.password}")
-    private String dbPass;
-    
+    private String password;
+
     @Bean
     public Sql2o sql2o(){
-        return new Sql2o(dbUrl, dbUser, dbPass);
+        return new Sql2o(db,user,password);
     }
 }
