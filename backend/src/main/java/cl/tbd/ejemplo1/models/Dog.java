@@ -1,7 +1,5 @@
 package cl.tbd.ejemplo1.models;
 
-import org.postgis.PGgeometry;
-import org.postgis.Point;
 
 public class Dog {
     private Integer id;

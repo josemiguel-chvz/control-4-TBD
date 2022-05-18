@@ -63,7 +63,7 @@ export default {
       }
       
       try {
-        let response = await axios.post('http://localhost:3000/dogs' ,newPoint);
+        let response = await axios.post('http://localhost:8080/dogs/' ,newPoint);
         console.log('response', response.data);
         let id = response.data.id;
         this.message = `${this.name} fue creado con éxito con id: ${id}`;
@@ -79,7 +79,7 @@ export default {
     async getPoints(map){
       try {
         //se llama el servicio 
-        let response = await axios.get('http://localhost:3000/dogs');
+        let response = await axios.get('http://localhost:8080/dogs');
         let dataPoints = response.data;
         //Se itera por los puntos
         dataPoints.forEach(point => {

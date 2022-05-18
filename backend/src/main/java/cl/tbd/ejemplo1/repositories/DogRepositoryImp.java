@@ -2,7 +2,6 @@ package cl.tbd.ejemplo1.repositories;
 
 import cl.tbd.ejemplo1.models.Dog;
 
-import org.postgis.Point;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.sql2o.Connection;
