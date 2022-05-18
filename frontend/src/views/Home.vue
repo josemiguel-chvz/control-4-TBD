@@ -1,12 +1,17 @@
 <template>
   <div class="home">
     <h1>Ejemplo Mapas</h1>
-    <div>{{point}} 
+    <div>{{point}}
       <input type="text" v-model="name" placeholder="nombre" />
       <button type="button" @click="createPoint">Crear</button>
     </div>
     <div>{{message}}</div>
-    <div id="mapid"></div>
+    <div id="mapid" ></div>
+    <div>
+      <v-row>
+        
+      </v-row>
+    </div>
   </div>
 </template>
 <script>
@@ -30,8 +35,9 @@ export default {
       longitude:null,
       name:'',
       points:[], //colección de puntos cargados de la BD
-      message:'', 
-      mymap:null //objeto de mapa(DIV)
+      message:'',
+      mymap:null, //objeto de mapa(DIV),
+      regions: [] //Regiones
     }
   },
   computed:{
@@ -47,11 +53,18 @@ export default {
   },
   methods:{
     clearMarkers:function(){ //eliminar marcadores
-    
       this.points.forEach(p=>{
         this.mymap.removeLayer(p);
       })
       this.points = [];
+    },
+    async getRegions(){
+      try {
+        let response = await axios.get('http://localhost:8080/regions');
+        this.regiones = response.data;
+      } catch (error) {
+        console.log('error', error);
+      }
     },
     async createPoint(){ //Crear un nuevo punto
       this.message = '';
@@ -61,9 +74,9 @@ export default {
         latitude: this.latitude,
         longitude: this.longitude
       }
-      
+
       try {
-        let response = await axios.post('http://localhost:8080/dogs/' ,newPoint);
+        let response = await axios.post('http://localhost:8080/dogs' ,newPoint);
         console.log('response', response.data);
         let id = response.data.id;
         this.message = `${this.name} fue creado con éxito con id: ${id}`;
@@ -72,13 +85,13 @@ export default {
         this.getPoints(this.mymap)
 
       } catch (error) {
-       console.log('error', error); 
-       this.message = 'Ocurrió un error'
+        console.log('error', error);
+        this.message = 'Ocurrió un error'
       }
     },
     async getPoints(map){
       try {
-        //se llama el servicio 
+        //se llama el servicio
         let response = await axios.get('http://localhost:8080/dogs');
         let dataPoints = response.data;
         //Se itera por los puntos
@@ -88,7 +101,7 @@ export default {
           let p =[point.latitude, point.longitude]
           let marker = L.marker(p, {icon:myIcon}) //se define el ícono del marcador
           .bindPopup(point.name) //Se agrega un popup con el nombre
-          
+
           //Se agrega a la lista
           this.points.push(marker);
         });
@@ -98,19 +111,18 @@ export default {
           p.addTo(map)
         })
       } catch (error) {
-       console.log('error', error); 
+        console.log('error', error);
       }
-      
     }
   },
   mounted:function(){
     let _this = this;
     //Se asigna el mapa al elemento con id="mapid"
-     this.mymap = L.map('mapid').setView([-33.456, -70.648], 7);
+    this.mymap = L.map('mapid').setView([-33.456, -70.648], 7);
     //Se definen los mapas de bits de OSM
     L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
-    	attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors',
-    	maxZoom: 10
+      attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors',
+      maxZoom: 10
     }).addTo(this.mymap);
 
     //Evento click obtiene lat y long actual
@@ -131,8 +143,9 @@ export default {
   align-items: center;
 }
 /* Estilos necesarios para definir el objeto de mapa */
-#mapid { 
-  height: 400px; 
-  width:600px;
+#mapid {
+  height: 600px;
+  width:800px;
+  margin-top: 50px;
 }
 </style>
