@@ -17,11 +17,16 @@ public class RegionRepositoryImp implements RegionRepository {
     @Override
     public List<Region> getAllRegions() {
         try(Connection conn = sql2o.open()) {
-            final String query = 
+            final String query = "SELECT distinct on ( cod_regi) " +
+                                    "gid as id, cod_regi as cod_reg, nom_reg as name, superficie as area " +
+                                    "FROM division_regional " +
+                                    "WHERE cod_regi != 0 and st_isempty(geom) = false " +
+                                    "ORDER BY cod_regi asc;";
+            return conn.createQuery(query)
+                        .executeAndFetch(Region.class);
         } catch (Exception e) {
-            //TODO: handle exception
+            System.out.println("Error en repository: "+e.getMessage());
+            return null;
         }
-        // TODO Auto-generated method stub
-        return null;
     }
 }

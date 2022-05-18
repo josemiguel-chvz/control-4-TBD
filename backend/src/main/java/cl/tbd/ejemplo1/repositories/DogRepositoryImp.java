@@ -37,6 +37,23 @@ public class DogRepositoryImp implements DogRepository {
     }
 
     @Override
+    public List<Dog> getDogsByRegion(int region_id) {
+        try(Connection conn = sql2o.open()) {
+            final String query = "SELECT d.id, d.name, st_x(st_astext( d.location)) AS longitude, st_y(st_astext(d.location)) AS latitude " + 
+                                    "FROM dog d JOIN division_regional dr " +
+                                    "ON st_contains(st_setsrid(dr.geom, 4326), d.location) " +
+                                    "where dr.gid = :region_id;";
+            return conn.createQuery(query)
+                        .addParameter("region_id", region_id)
+                        .executeAndFetch(Dog.class);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return null;
+        }
+    }
+
+
+    @Override
     public Dog createDog(Dog dog) {
         try(Connection conn = sql2o.open()){
             String query = "INSERT INTO DOG (name, location) " +

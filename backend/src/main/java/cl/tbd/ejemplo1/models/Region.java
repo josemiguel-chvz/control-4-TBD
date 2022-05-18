@@ -1,12 +1,13 @@
 package cl.tbd.ejemplo1.models;
-import org.postgis.PGgeometry;
+
+// import java.util.HashMap;
 
 public class Region {
     private int id;
     private int cod_reg;
     private String name;
     private float area;
-    private PGgeometry geom;
+    // private HashMap<String, Object> geom;
 
     public int getId() {
         return id;
@@ -40,11 +41,11 @@ public class Region {
         this.area = area;
     }
 
-    public PGgeometry getGeom() {
-        return geom;
-    }
+    // public HashMap<String, Object> getGeom() {
+    //     return geom;
+    // }
 
-    public void setGeom(PGgeometry geom) {
-        this.geom = geom;
-    }
+    // public void setGeom(HashMap<String, Object> geom) {
+    //     this.geom = geom;
+    // }
 }
