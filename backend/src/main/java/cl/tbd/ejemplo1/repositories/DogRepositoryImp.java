@@ -57,7 +57,7 @@ public class DogRepositoryImp implements DogRepository {
         try (Connection conn = sql2o.open()) {
             final String query = "SELECT name, st_x(st_astext(location)) AS longitude, st_y(st_astext(location)) AS latitude " +
                                     "FROM dog "+
-                                    "ORDER BY st_distance(ST_SetSRID(st_makepoint(:latitude,:longitude),4326) , location) " +
+                                    "ORDER BY st_distance(ST_SetSRID(st_makepoint(:latitude,:longitude),4326) , location) asc " +
                                     "LIMIT :limit";
             return conn.createQuery(query)
                         .addParameter("latitude", latitude)
