@@ -7,6 +7,7 @@ public interface DogRepository {
     public List<Dog> getAllDogs();
     public List<Dog> getDogsByRegion(int region_id);
     public List<Dog> getNearbyDogs(float latitude, float longitude, int limit);
+    public List<Dog> getDogsRadio(float latitude, float longitude, int radio);
     public Dog createDog(Dog dog);
     public String getJson();
 }

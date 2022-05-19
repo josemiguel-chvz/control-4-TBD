@@ -70,6 +70,25 @@ public class DogRepositoryImp implements DogRepository {
         }
     }
 
+    @Override
+    public List<Dog> getDogsRadio(float latitude, float longitude, int radio) {
+        try (Connection conn = sql2o.open()) {
+            final String query = "SELECT name,  st_x(st_astext(location)) AS longitude, st_y(st_astext(location)) AS latitude " +
+                                    "FROM dog "+
+                                    "WHERE st_dwithin(ST_SetSRID(st_makepoint(:longitude,:latitude),4326)::geography,location::geography, :radio) " +
+                                    "AND st_distance(ST_SetSRID(st_makepoint(:longitude,:latitude),4326),location) > 0";
+            return conn.createQuery(query)
+                        .addParameter("latitude", latitude)
+                        .addParameter("longitude", longitude)
+                        .addParameter("radio", radio*1000)
+                        .executeAndFetch(Dog.class);
+        } catch (Exception e) {
+            System.out.println("Error BD: "+e.getMessage());
+            return null;
+        }
+    }
+
+
 
     @Override
     public Dog createDog(Dog dog) {

@@ -59,6 +59,23 @@ public class DogService {
                 return null;
             }
         }
+    
+    @GetMapping("/dogs/radiodogs")
+    public List<Dog> getDogsRadio(
+        @RequestParam(value="latitude", required = true) Float latitude,
+        @RequestParam(value="longitude", required = true) Float longitude,
+        @RequestParam(value="radio", required = true) Integer radio
+        ) {
+            try {
+                List<Dog> dogs = new ArrayList<>();
+                Iterable<Dog> records = dogRepository.getDogsRadio(latitude, longitude, radio);
+                records.forEach(dogs::add);
+                return dogs;
+            } catch (Exception e) {
+                System.out.println("Error :" + e.getMessage());
+                return null;
+            }
+        }
 
     @GetMapping("/dogs/count")
     public String countDogs(){
