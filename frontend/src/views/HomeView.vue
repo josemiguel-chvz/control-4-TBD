@@ -82,17 +82,29 @@
             <v-list-item-content>
               <v-list-item-title>Perros cercanos</v-list-item-title>
               <v-list-item-subtitle class="mt-2">
-                 <!-- <v-select
+                <v-select
+                  class="mt-5"
+                  :items="getNumbers()"
+                  label="Cantidad"
+                  dense
+                  outlined
+                  v-model="qty"
+                ></v-select>
+              </v-list-item-subtitle>
+            </v-list-item-content>
+          </v-list-item>
+          <v-list-item>
+            <v-list-item-content>
+              <v-list-item-title>Perros en un radio</v-list-item-title>
+              <v-list-item-subtitle class="mt-2">
+                <v-select
                     class="mt-5"
-                    :items="{...Array.from(Array(10).keys())}"
-                    label="Regiones"
+                    :items="getRadius()"
+                    label="Radio (metros)"
                     dense
-                    item-text="name"
-                    item-value="id"
                     outlined
-                    
-                    
-                  ></v-select> -->
+                    v-model="radius"
+                  ></v-select>
               </v-list-item-subtitle>
             </v-list-item-content>
           </v-list-item>
@@ -101,7 +113,41 @@
       </v-col>
       <v-col cols="9">
         <div class="home">
-        <div id="mapid" ></div>
+          <div id="mapid" ></div>
+          <div class="mt-4">
+            <v-row>
+              <v-col cols="6">
+                <v-card
+                  style="height: 100%;width:400px;"
+                >
+                  <v-card-title>
+                    <h2 class="font-weight-medium text--primary">Perros cercanos</h2>
+                  </v-card-title>
+                  <v-card-subtitle>
+                    Cantidad: {{qty}}
+                  </v-card-subtitle>
+                  <v-card-text>
+                    lista
+                  </v-card-text>
+                </v-card>
+              </v-col>
+              <v-col cols="6">
+                <v-card
+                  style="height: 100%;width:400px;"
+                >
+                <v-card-title>
+                    <h2 class="font-weight-medium text--primary">Perros en un radio</h2>
+                  </v-card-title>
+                  <v-card-subtitle>
+                    Radio: {{radius}} metros
+                  </v-card-subtitle>
+                  <v-card-text>
+                    lista
+                  </v-card-text>
+                </v-card>
+              </v-col>
+            </v-row>
+          </div>
         </div>
       </v-col>
     </v-row>
@@ -116,8 +162,8 @@ import 'leaflet/dist/leaflet.css'; //css leaflet
 var icon = require('leaflet/dist/images/marker-icon.png'); //ícono de marcadores
 //Se crea objeto ícono con el marcador
 var LeafIcon = L.Icon.extend({
-          options: {iconSize:[25, 41], iconAnchor:[12, 41], popupAnchor: [-3, -41]}
-      });
+  options: {iconSize:[25, 41], iconAnchor:[12, 41], popupAnchor: [-3, -41]}
+});
 var myIcon = new LeafIcon({iconUrl: icon});
 
 export default {
@@ -134,7 +180,9 @@ export default {
       regions: [], //Regiones
       selected_region: 0,
       selected_point_latitude: null,
-      selected_point_longitude: null
+      selected_point_longitude: null,
+      radius: 0,
+      qty:0
     }
   },
   computed:{
@@ -249,7 +297,7 @@ export default {
 
           //Los puntos de la lista se agregan al mapa
           this.points.forEach(p=>{
-            p.addTo(this.mymap);
+            p.addTo(this.mymap).on('click', this.selectMarker);
           });
           center = [dataPoints[0].latitude,dataPoints[0].longitude];
         }
@@ -261,6 +309,34 @@ export default {
     selectMarker(marker) {
       this.selected_point_latitude = marker.latlng.lat;
       this.selected_point_longitude = marker.latlng.lng;
+    },
+    getNumbers() {
+      let start = 0;
+      let end = 10;
+      let numbers = [];
+      let i = start;
+      for(i=start; i<=end; i++) {
+        numbers.push(i);
+      }
+      if ( i !== end) {
+        console.log(i);
+      }
+      return numbers;
+    },
+    getRadius() {
+      let start = 100;
+      let end = 1500;
+      let step = 200;
+      let radius = [];
+      let i = start;
+      for(i=start; i<=end; i=i+step) {
+        radius.push(i);
+      }
+      if ( i !== end) {
+        console.log(i);
+      }
+
+      return radius;
     }
   },
   mounted:function(){
