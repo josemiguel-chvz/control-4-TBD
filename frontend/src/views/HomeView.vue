@@ -89,6 +89,7 @@
                   dense
                   outlined
                   v-model="qty"
+                  @change="getNearbyDogs($event)"
                 ></v-select>
               </v-list-item-subtitle>
             </v-list-item-content>
@@ -127,7 +128,7 @@
                     Cantidad: {{qty}}
                   </v-card-subtitle>
                   <v-card-text>
-                    lista
+                    lista perros cercanos
                   </v-card-text>
                 </v-card>
               </v-col>
@@ -142,7 +143,11 @@
                     Radio: {{radius}} metros
                   </v-card-subtitle>
                   <v-card-text>
-                    lista
+                    <ul>
+                      <li>
+                        nombre (lat, long)
+                      </li>
+                    </ul>
                   </v-card-text>
                 </v-card>
               </v-col>
@@ -182,7 +187,9 @@ export default {
       selected_point_latitude: null,
       selected_point_longitude: null,
       radius: 0,
-      qty:0
+      qty:0,
+      nearby_dogs: [],
+      within_radius_dogs: []
     }
   },
   computed:{
@@ -335,8 +342,10 @@ export default {
       if ( i !== end) {
         console.log(i);
       }
-
       return radius;
+    },
+    async getNearbyDogs(cantidad) {
+       //http://localhost:8080/dogs/nearby?latitude=selected_point_latitude&longitude=selected_point_longitude&limit=cantidad
     }
   },
   mounted:function(){
