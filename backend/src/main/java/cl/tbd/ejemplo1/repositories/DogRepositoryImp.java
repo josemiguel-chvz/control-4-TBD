@@ -75,8 +75,8 @@ public class DogRepositoryImp implements DogRepository {
         try (Connection conn = sql2o.open()) {
             final String query = "SELECT name,  st_x(st_astext(location)) AS longitude, st_y(st_astext(location)) AS latitude " +
                                     "FROM dog "+
-                                    "WHERE st_dwithin(ST_SetSRID(st_makepoint(:longitude,:latitude),4326)::geography,location::geography, :radio) " +
-                                    "AND st_distance(ST_SetSRID(st_makepoint(:longitude,:latitude),4326),location) > 0";
+                                    "WHERE st_dwithin(ST_SetSRID(st_makepoint(:longitude,:latitude),4326)::geography,location::geography, :radio) AND st_distance(ST_SetSRID(st_makepoint(:longitude,:latitude),4326),location::geography) > 0";
+                                    
             return conn.createQuery(query)
                         .addParameter("latitude", latitude)
                         .addParameter("longitude", longitude)
