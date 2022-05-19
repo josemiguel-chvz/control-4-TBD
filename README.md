@@ -2,6 +2,9 @@
 
 ## Base de datos
 
+en application.properties colocar credenciales de postgreSQL
+
+
 Crear una base de datos llamada "control_4_tbd" para cargar el backup
 
 ```
