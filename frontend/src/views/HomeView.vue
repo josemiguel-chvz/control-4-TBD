@@ -101,7 +101,7 @@
                 <v-select
                     class="mt-5"
                     :items="getRadius()"
-                    label="Radio (km)"
+                    label="Radio (metros)"
                     dense
                     outlined
                     v-model="radius"
@@ -128,7 +128,11 @@
                     Cantidad: {{qty}}
                   </v-card-subtitle>
                   <v-card-text>
-                    lista perros cercanos
+                    <ul>
+                      <li v-for="dog in nearby_dogs" :key="dog.name">
+                        {{dog.name}}
+                      </li>
+                    </ul> 
                   </v-card-text>
                 </v-card>
               </v-col>
@@ -140,7 +144,7 @@
                     <h2 class="font-weight-medium text--primary">Perros en un radio</h2>
                   </v-card-title>
                   <v-card-subtitle>
-                    Radio: {{radius}} kilometros
+                    Radio: {{radius}} metros
                   </v-card-subtitle>
                   <v-card-text>
                     <ul>
@@ -342,10 +346,16 @@ export default {
       if ( i !== end) {
         console.log(i);
       }
+
       return radius;
     },
     async getNearbyDogs(cantidad) {
-       //http://localhost:8080/dogs/nearby?latitude=selected_point_latitude&longitude=selected_point_longitude&limit=cantidad
+      try{
+      let response = await axios.get('http://localhost:8080/dogs/nearby?latitude='+this.selected_point_latitude+'&longitude='+this.selected_point_longitude+'&limit='+cantidad);
+      this.nearby_dogs = response.data;
+       } catch (error) {
+          console.log('error', error);
+      }
     }
   },
   mounted:function(){
