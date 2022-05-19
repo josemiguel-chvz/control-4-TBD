@@ -39,7 +39,7 @@ public class DogRepositoryImp implements DogRepository {
     @Override
     public List<Dog> getDogsByRegion(int region_id) {
         try(Connection conn = sql2o.open()) {
-            final String query = "SELECT d.id, d.name, st_x(st_astext( d.location)) AS longitude, st_y(st_astext(d.location)) AS latitude " + 
+            final String query = "SELECT d.id, d.name, st_x(st_astext( d.location)) AS longitude, st_y(st_astext(d.location)) AS latitude " +
                                     "FROM dog d JOIN division_regional dr " +
                                     "ON st_contains(st_setsrid(dr.geom, 4326), d.location) " +
                                     "where dr.gid = :region_id;";
@@ -48,6 +48,24 @@ public class DogRepositoryImp implements DogRepository {
                         .executeAndFetch(Dog.class);
         } catch (Exception e) {
             System.out.println(e.getMessage());
+            return null;
+        }
+    }
+
+    @Override
+    public List<Dog> getNearbyDogs(float latitude, float longitude, int limit) {
+        try (Connection conn = sql2o.open()){
+            final String query = "SELECT name, st_x(st_astext(location)) AS longitude, st_y(st_astext(location)) AS latitude " +
+                                    "FROM dog "+
+                                    "ORDER BY st_distance(ST_SetSRID(st_makepoint(:latitude,:longitude),4326) , location) " +
+                                    "LIMIT :limit";
+            return conn.createQuery(query)
+                        .addParameter("latitude", latitude)
+                        .addParameter("longitude", longitude)
+                        .addParameter("limit", limit)
+                        .executeAndFetch(Dog.class);
+        } catch (Exception e) {
+            System.out.println("Error BD: "+e.getMessage());
             return null;
         }
     }

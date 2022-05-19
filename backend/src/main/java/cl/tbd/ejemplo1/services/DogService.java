@@ -2,10 +2,6 @@ package cl.tbd.ejemplo1.services;
 
 import cl.tbd.ejemplo1.models.Dog;
 import cl.tbd.ejemplo1.repositories.DogRepository;
-
-import org.postgis.Geometry;
-import org.postgis.PGgeometry;
-import org.postgis.Point;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -13,11 +9,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.http.ResponseEntity;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @CrossOrigin
 @RestController
@@ -49,6 +43,22 @@ public class DogService {
         }
     }
 
+    @GetMapping("/dogs/nearby")
+    public List<Dog> getNearbyDogs(
+        @RequestParam(value="latitude", required = true) Float latitude,
+        @RequestParam(value="longitude", required = true) Float longitude,
+        @RequestParam(value="limit", required = true) Integer limit
+        ) {
+            try {
+                List<Dog> dogs = new ArrayList<>();
+                Iterable<Dog> records = dogRepository.getNearbyDogs(latitude, longitude, limit);
+                records.forEach(dogs::add);
+                return dogs;
+            } catch (Exception e) {
+                System.out.println("Error :" + e.getMessage());
+                return null;
+            }
+        }
 
     @GetMapping("/dogs/count")
     public String countDogs(){
