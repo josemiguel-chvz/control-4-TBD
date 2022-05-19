@@ -101,7 +101,7 @@
                 <v-select
                     class="mt-5"
                     :items="getRadius()"
-                    label="Radio (metros)"
+                    label="Radio (km)"
                     dense
                     outlined
                     v-model="radius"
@@ -140,7 +140,7 @@
                     <h2 class="font-weight-medium text--primary">Perros en un radio</h2>
                   </v-card-title>
                   <v-card-subtitle>
-                    Radio: {{radius}} metros
+                    Radio: {{radius}} kilometros
                   </v-card-subtitle>
                   <v-card-text>
                     <ul>
