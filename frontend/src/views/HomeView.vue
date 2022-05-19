@@ -101,10 +101,11 @@
                 <v-select
                     class="mt-5"
                     :items="getRadius()"
-                    label="Radio (metros)"
+                    label="Radio (kilometros)"
                     dense
                     outlined
                     v-model="radius"
+                    @change="getDogsRadio($event)"
                   ></v-select>
               </v-list-item-subtitle>
             </v-list-item-content>
@@ -144,12 +145,14 @@
                     <h2 class="font-weight-medium text--primary">Perros en un radio</h2>
                   </v-card-title>
                   <v-card-subtitle>
-                    Radio: {{radius}} metros
+                    Radio: {{radius}} kilometros
                   </v-card-subtitle>
                   <v-card-text>
                     <ul>
-                      <li>
-                        nombre (lat, long)
+                      <li v-for="dog in within_radius_dogs" :key="dog.name">
+                        {{dog.name}},
+                        {{dog.latitude}},
+                        {{dog.logitude}}
                       </li>
                     </ul>
                   </v-card-text>
@@ -335,9 +338,9 @@ export default {
       return numbers;
     },
     getRadius() {
-      let start = 100;
-      let end = 1500;
-      let step = 200;
+      let start = 10;
+      let end = 400;
+      let step = 30;
       let radius = [];
       let i = start;
       for(i=start; i<=end; i=i+step) {
@@ -355,6 +358,14 @@ export default {
         let response = await axios.get('http://localhost:8080/dogs/nearby?latitude='+this.selected_point_latitude+'&longitude='+this.selected_point_longitude+'&limit='+cantidad);
         this.nearby_dogs = response.data;
       } catch (error) {
+          console.log('error', error);
+      }
+    },
+    async getDogsRadio(radio) {
+      try{
+        let response = await axios.get('http://localhost:8080/dogs/radiodogs?latitude='+this.selected_point_latitude+'&longitude='+this.selected_point_longitude+'&radio='+radio);
+        this.within_radius_dogs = response.data;
+      }catch (error) {
           console.log('error', error);
       }
     }
