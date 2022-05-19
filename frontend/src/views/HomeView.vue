@@ -13,7 +13,7 @@
             <v-list-item-content>
               <v-list-item-title>Coordenadas seleccionadas</v-list-item-title>
               <v-list-item-subtitle>
-                <div class="py-3">Punto (Lon,Lat): <b>{{point}}</b></div>
+                <div class="py-3">Punto (Lat, Lng): <b>{{point}}</b></div>
               </v-list-item-subtitle>
             </v-list-item-content>
           </v-list-item>
@@ -74,7 +74,7 @@
             <v-list-item-content>
               <v-list-item-title>Perro seleccionado</v-list-item-title>
               <v-list-item-subtitle class="mt-2">
-                <div class="py-3">Punto (Lon,Lat): <b>{{selected_point}}</b></div>
+                <div class="py-3">Punto (Lat, Lng): <b>{{selected_point}}</b></div>
               </v-list-item-subtitle>
             </v-list-item-content>
           </v-list-item>
@@ -129,10 +129,10 @@
                   </v-card-subtitle>
                   <v-card-text>
                     <ul>
-                      <li v-for="dog in nearby_dogs" :key="dog.name">
+                      <li v-for="(dog,index) in nearby_dogs" :key="index">
                         {{dog.name}}
                       </li>
-                    </ul> 
+                    </ul>
                   </v-card-text>
                 </v-card>
               </v-col>
@@ -351,9 +351,10 @@ export default {
     },
     async getNearbyDogs(cantidad) {
       try{
-      let response = await axios.get('http://localhost:8080/dogs/nearby?latitude='+this.selected_point_latitude+'&longitude='+this.selected_point_longitude+'&limit='+cantidad);
-      this.nearby_dogs = response.data;
-       } catch (error) {
+        this.nearby_dogs = [];
+        let response = await axios.get('http://localhost:8080/dogs/nearby?latitude='+this.selected_point_latitude+'&longitude='+this.selected_point_longitude+'&limit='+cantidad);
+        this.nearby_dogs = response.data;
+      } catch (error) {
           console.log('error', error);
       }
     }

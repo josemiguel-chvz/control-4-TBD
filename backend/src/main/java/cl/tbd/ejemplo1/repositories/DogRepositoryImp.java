@@ -57,7 +57,7 @@ public class DogRepositoryImp implements DogRepository {
         try (Connection conn = sql2o.open()) {
             final String query = "SELECT name, st_x(st_astext(location)) AS longitude, st_y(st_astext(location)) AS latitude " +
                                     "FROM dog "+
-                                    "ORDER BY st_distance(ST_SetSRID(st_makepoint(:latitude,:longitude),4326) , location) asc " +
+                                    "ORDER BY st_distance(location::geography, ST_SetSRID(st_makepoint(:longitude,:latitude),4326)::geography) asc " +
                                     "LIMIT :limit";
             return conn.createQuery(query)
                         .addParameter("latitude", latitude)
@@ -79,18 +79,17 @@ public class DogRepositoryImp implements DogRepository {
 
             String point = "POINT("+dog.getLongitude()+" "+dog.getLatitude()+")";
             System.out.println("point: "+point);
-            
+
             int insertedId = (int) conn.createQuery(query, true)
                     .addParameter("dogName", dog.getName())
                     .addParameter("point", point)
                     .executeUpdate().getKey();
             dog.setId(insertedId);
-            return dog;        
+            return dog;
         }catch(Exception e){
             System.out.println(e.getMessage());
             return null;
         }
-        
     }
 
     @Override
